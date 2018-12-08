@@ -1,6 +1,7 @@
 #include <ncurses.h>
 #include <string.h>
 #include <stdlib.h>
+#include <locale.h>
 #define WHITE 15
 
 char outstring[1024];
@@ -19,6 +20,8 @@ void spacerem(char source[])
 
 int numpad(int y, int x)
 {
+	setlocale(LC_ALL, "");
+
 	char numpad[20][100] = {" 7 ", " 4 ", " 1 ", " 0 ", " 8 ", " 5 ", " 2 ", " . ", " 9 ", " 6 ", " 3 ", " P ", "Del", " * ", " + ", "Ans", " C ", " / ", " - ", " = "};
 	int maxx, maxy;
 	int focused = 0;
@@ -108,7 +111,7 @@ int numpad(int y, int x)
 			{
 				break;
 			}
-			char tmp[1][3] = {" "};
+			char tmp[1][4] = {" "};
 			strcpy(tmp[0], numpad[focused]);
 			spacerem(tmp[0]);
 			strcat(outstring, tmp[0]);

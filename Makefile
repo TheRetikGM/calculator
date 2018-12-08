@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -c
 
 app: main.o numpad.o
-	$(CC) -o calc -lncurses main.o numpad.o -lm 
+	$(CC) -o calc -lncursesw main.o numpad.o -lm 
 
 main.o: main.c
 	$(CC) $(CFLAGS) main.c
