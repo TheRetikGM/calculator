@@ -27,10 +27,13 @@ int numpad(int y, int x)
 	initscr();
 
 	getmaxyx(stdscr, maxy, maxx);
-	WINDOW* numwin = newwin(y, x, maxy/2 - y/2, maxx/2 - x/2);
+	WINDOW* calscr = newwin(3, x, maxy/2 - 3, maxx/2 - x/2);
+	WINDOW* numwin = newwin(y, x, maxy/2, maxx/2 - x/2);
 	refresh();
+	box(calscr, 0, 0);
 	box(numwin, 0, 0);
-	wrefresh(numwin); 
+	wrefresh(numwin);
+	wrefresh(calscr);
 	keypad(numwin, true);
 
 	while (1 == 1)
@@ -108,9 +111,9 @@ int numpad(int y, int x)
 			char tmp[1][3] = {" "};
 			strcpy(tmp[0], numpad[focused]);
 			spacerem(tmp[0]);
-			printw("%s", tmp[0]);
-			refresh();
 			strcat(outstring, tmp[0]);
+			mvwprintw(calscr, 1, strlen(outstring), "%s", tmp[0]);
+			wrefresh(calscr);
 		}
 	}
 	system("clear");

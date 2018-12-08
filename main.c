@@ -5,6 +5,6 @@
 int main()
 {
 	numpad(6, 17);
-	printf("napsal jsi: \"%s\"\n", outstring);
+	printf("Output from numpad: \"%s\"\n", outstring);
 	return 0;
 }
