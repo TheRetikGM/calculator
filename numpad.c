@@ -22,8 +22,7 @@ int numpad(int y, int x)
 	char numpad[20][100] = {" 7 ", " 4 ", " 1 ", " 0 ", " 8 ", " 5 ", " 2 ", " . ", " 9 ", " 6 ", " 3 ", " P ", "Del", " * ", " + ", "Ans", " C ", " / ", " - ", " = "};
 	int maxx, maxy;
 	int focused = 0;
-	int last = 0;	
-	char wrtstring[1024];
+	int last = 0;
 
 	initscr();
 
@@ -102,17 +101,20 @@ int numpad(int y, int x)
 		}
 		if (choice == 10)
 		{
+			if (strcmp(numpad[focused], " = ") == 0)
+			{
+				break;
+			}
 			char tmp[1][3] = {" "};
 			strcpy(tmp[0], numpad[focused]);
 			spacerem(tmp[0]);
-			if (strcmp(tmp[0], "=") == 0) break;
-			strcat(wrtstring, tmp[0]);
-			printw("%s", wrtstring);
+			printw("%s", tmp[0]);
 			refresh();
-			strcat(outstring, wrtstring);
+			strcat(outstring, tmp[0]);
 		}
 	}
 	system("clear");
 
 	endwin();	
+	return 0;
 }
