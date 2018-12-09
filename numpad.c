@@ -111,11 +111,32 @@ int numpad(int y, int x)
 			{
 				break;
 			}
-			char tmp[1][4] = {" "};
+			char tmp[1][4];
 			strcpy(tmp[0], numpad[focused]);
 			spacerem(tmp[0]);
-			strcat(outstring, tmp[0]);
-			mvwprintw(calscr, 1, strlen(outstring), "%s", tmp[0]);
+			
+			if (strcmp(tmp[0], "C") == 0)
+			{
+				outstring[0] = '\0';
+				wmove(calscr, 1, 1);
+				for (int i = 0; i < 15; i++)
+				{
+					wprintw(calscr, " ");
+				}
+				wrefresh(calscr);
+				wmove(calscr, 1, 1);
+			}
+			else
+			{
+				strcat(outstring, tmp[0]);	
+				if (strlen(tmp[0]) != 3)
+				{
+					mvwprintw(calscr, 1, strlen(outstring), "%s", tmp[0]);
+				} else
+				{
+					mvwprintw(calscr, 1, strlen(outstring) - 2, "%s", tmp[0]);
+				}
+			}
 			wrefresh(calscr);
 		}
 	}
