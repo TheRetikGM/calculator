@@ -20,8 +20,6 @@ void spacerem(char source[])
 
 int numpad(int y, int x)
 {
-	setlocale(LC_ALL, "");
-
 	char numpad[20][100] = {" 7 ", " 4 ", " 1 ", " 0 ", " 8 ", " 5 ", " 2 ", " . ", " 9 ", " 6 ", " 3 ", " P ", "Del", " * ", " + ", "Ans", " C ", " / ", " - ", " = "};
 	int maxx, maxy;
 	int focused = 0;
@@ -105,7 +103,8 @@ int numpad(int y, int x)
 				break;
 			}
 		}
-		if (choice == 10)
+
+		if (choice == 10) 	// if you hit enter
 		{
 			if (strcmp(numpad[focused], " = ") == 0)
 			{
@@ -117,14 +116,26 @@ int numpad(int y, int x)
 			
 			if (strcmp(tmp[0], "C") == 0)
 			{
-				outstring[0] = '\0';
 				wmove(calscr, 1, 1);
-				for (int i = 0; i < 15; i++)
+				for (int i = 0; i < strlen(outstring); i++)
 				{
 					wprintw(calscr, " ");
 				}
 				wrefresh(calscr);
 				wmove(calscr, 1, 1);
+				outstring[0] = '\0';
+			}
+			else if (strcmp(tmp[0], "Del") == 0)
+			{
+				outstring[strlen(outstring) - 1] = '\0';
+				wmove(calscr, 1, 1);
+				for (int i = 0; i < strlen(outstring) + 1; i++)
+				{
+					wprintw(calscr, " ");
+				}
+				wmove(calscr, 1, 1);
+				mvwprintw(calscr, 1, 1, "%s", outstring);	
+				wrefresh(calscr);
 			}
 			else
 			{
