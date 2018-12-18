@@ -20,10 +20,11 @@ void spacerem(char source[])
 
 int numpad(int y, int x)
 {
-	char numpad[20][100] = {" 7 ", " 4 ", " 1 ", " 0 ", " 8 ", " 5 ", " 2 ", " . ", " 9 ", " 6 ", " 3 ", " P ", "Del", " * ", " + ", "Ans", " C ", " / ", " - ", " = "};
+	char numpad[20][100] = {" 7 ", " 4 ", " 1 ", " 0 ", " 8 ", " 5 ", " 2 ", " . ", " 9 ", " 6 ", " 3 ", " \317\200 ", "Del", " * ", " + ", "Ans", " C ", " / ", " - ", " = "};
 	int maxx, maxy;
 	int focused = 0;
 	int last = 0;
+	bool lastoperation = false;
 
 	initscr();
 
@@ -139,13 +140,18 @@ int numpad(int y, int x)
 			}
 			else
 			{
-				strcat(outstring, tmp[0]);	
-				if (strlen(tmp[0]) != 3)
+				if(true)
 				{
-					mvwprintw(calscr, 1, strlen(outstring), "%s", tmp[0]);
-				} else
-				{
-					mvwprintw(calscr, 1, strlen(outstring) - 2, "%s", tmp[0]);
+					refresh();
+					strcat(outstring, tmp[0]);
+					if (strlen(tmp[0]) != 3)
+					{
+						mvwprintw(calscr, 1, strlen(outstring), "%s", tmp[0]);
+					}
+			       		else
+					{
+						mvwprintw(calscr, 1, strlen(outstring) - 2, "%s", tmp[0]);
+					}
 				}
 			}
 			wrefresh(calscr);
