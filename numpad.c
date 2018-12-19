@@ -149,8 +149,6 @@ int numpad(int y, int x)
 					{
 						if (strcmp(tmp[0], operators[i]) == 0) a++;
 					}
-					printw("%i", a);
-					refresh();
 					if(a == 0) lastoperation = false;
 				}
 				if (lastoperation == false)
