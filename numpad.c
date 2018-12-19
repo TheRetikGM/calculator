@@ -20,11 +20,14 @@ void spacerem(char source[])
 
 int numpad(int y, int x)
 {
-	char numpad[20][100] = {" 7 ", " 4 ", " 1 ", " 0 ", " 8 ", " 5 ", " 2 ", " . ", " 9 ", " 6 ", " 3 ", " \317\200 ", "Del", " * ", " + ", "Ans", " C ", " / ", " - ", " = "};
+	char numpad[20][100] = {" 7 ", " 4 ", " 1 ", " 0 ", " 8 ", " 5 ", " 2 ", " . ", " 9 ", " 6 ", " 3 ", " \u03C0 ", "Del", " * ", " + ", "Ans", " C ", " / ", " - ", " = "};
+	char operators[5][8] = {"+", "-", "*", "/", "."};
 	int maxx, maxy;
 	int focused = 0;
 	int last = 0;
-	bool lastoperation = false;
+	bool lastoperation = true;
+	char lastchar[5];
+	int picount = 0;
 
 	initscr();
 
@@ -125,6 +128,7 @@ int numpad(int y, int x)
 				wrefresh(calscr);
 				wmove(calscr, 1, 1);
 				outstring[0] = '\0';
+				lastoperation = true;
 			}
 			else if (strcmp(tmp[0], "Del") == 0)
 			{
@@ -137,23 +141,48 @@ int numpad(int y, int x)
 				wmove(calscr, 1, 1);
 				mvwprintw(calscr, 1, 1, "%s", outstring);	
 				wrefresh(calscr);
+				if (lastoperation == true) lastoperation = false; 
+				else if (strlen(outstring) == 0) lastoperation = true;
 			}
 			else
 			{
-				if(true)
+				if (lastoperation == true)
 				{
-					refresh();
-					strcat(outstring, tmp[0]);
-					if (strlen(tmp[0]) != 3)
+					int a = 0;
+					for (int i = 0; i < 5; i++)
 					{
-						mvwprintw(calscr, 1, strlen(outstring), "%s", tmp[0]);
+						if (strcmp(tmp[0], operators[i]) == 0) a++;
 					}
-			       		else
+					printw("%i", a);
+					refresh();
+					if(a == 0) lastoperation = false;
+				}
+				if (lastoperation == false)
+				{
+					int a = 0;
+					strcat(outstring, tmp[0]);
+					if (strlen(tmp[0]) == 1)
+					{
+						mvwprintw(calscr, 1, strlen(outstring) - picount, "%s", tmp[0]);
+					}
+					else if (strcmp(tmp[0], "\u03C0") == 0)
+					{
+						mvwprintw(calscr, 1, strlen(outstring) - 1 - picount, "%s", tmp[0]);
+						picount++;
+
+					}
+			       		else if (strlen(tmp[0]) == 3)
 					{
 						mvwprintw(calscr, 1, strlen(outstring) - 2, "%s", tmp[0]);
 					}
-				}
+					for (int i = 0; i < 5; i++)
+					{
+						if (strcmp(tmp[0], operators[i]) == 0) a++;
+					}
+					if (a == 1) lastoperation = true;
+				} 
 			}
+			strcpy(lastchar, tmp[0]);
 			wrefresh(calscr);
 		}
 	}
