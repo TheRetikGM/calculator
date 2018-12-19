@@ -120,29 +120,25 @@ int numpad(int y, int x)
 			
 			if (strcmp(tmp[0], "C") == 0)
 			{
+				wclear(calscr);
 				wmove(calscr, 1, 1);
-				for (int i = 0; i < strlen(outstring); i++)
-				{
-					wprintw(calscr, " ");
-				}
+				box(calscr, 0, 0);
 				wrefresh(calscr);
-				wmove(calscr, 1, 1);
 				outstring[0] = '\0';
 				lastoperation = true;
 			}
 			else if (strcmp(tmp[0], "Del") == 0)
 			{
-				outstring[strlen(outstring) - 1] = '\0';
-				wmove(calscr, 1, 1);
-				for (int i = 0; i < strlen(outstring) + 1; i++)
+				if (strlen(outstring) > 0)
 				{
-					wprintw(calscr, " ");
+					outstring[strlen(outstring) - 1] = '\0';
+					wclear(calscr);
+					box(calscr,0 , 0);
+					mvwprintw(calscr, 1, 1, "%s", outstring);	
+					wrefresh(calscr);
+					if (lastoperation == true) lastoperation = false; 
+					else if (strlen(outstring) == 0) lastoperation = true;
 				}
-				wmove(calscr, 1, 1);
-				mvwprintw(calscr, 1, 1, "%s", outstring);	
-				wrefresh(calscr);
-				if (lastoperation == true) lastoperation = false; 
-				else if (strlen(outstring) == 0) lastoperation = true;
 			}
 			else
 			{
@@ -161,20 +157,10 @@ int numpad(int y, int x)
 				{
 					int a = 0;
 					strcat(outstring, tmp[0]);
-					if (strlen(tmp[0]) == 1)
-					{
-						mvwprintw(calscr, 1, strlen(outstring) - picount, "%s", tmp[0]);
-					}
-					else if (strcmp(tmp[0], "\u03C0") == 0)
-					{
-						mvwprintw(calscr, 1, strlen(outstring) - 1 - picount, "%s", tmp[0]);
-						picount++;
+					wclear(calscr);
+					box(calscr, 0, 0);
+					mvwprintw(calscr, 1, 1, "%s", outstring);
 
-					}
-			       		else if (strlen(tmp[0]) == 3)
-					{
-						mvwprintw(calscr, 1, strlen(outstring) - 2, "%s", tmp[0]);
-					}
 					for (int i = 0; i < 5; i++)
 					{
 						if (strcmp(tmp[0], operators[i]) == 0) a++;
@@ -186,7 +172,6 @@ int numpad(int y, int x)
 			wrefresh(calscr);
 		}
 	}
-	system("clear");
 
 	endwin();	
 	return 0;
