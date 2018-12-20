@@ -32,7 +32,7 @@ int numpad(int y, int x)
 	initscr();
 
 	getmaxyx(stdscr, maxy, maxx);
-	WINDOW* calscr = newwin(3, x, maxy/2 - 3, maxx/2 - x/2);
+	WINDOW* calscr = newwin(4, x, maxy/2 - 4, maxx/2 - x/2);
 	WINDOW* numwin = newwin(y, x, maxy/2, maxx/2 - x/2);
 	refresh();
 	box(calscr, 0, 0);
@@ -110,64 +110,89 @@ int numpad(int y, int x)
 
 		if (choice == 10) 	// if you hit enter
 		{
-			if (strcmp(numpad[focused], " = ") == 0)
-			{
-				break;
-			}
 			char tmp[1][4];
 			strcpy(tmp[0], numpad[focused]);
 			spacerem(tmp[0]);
-			
-			if (strcmp(tmp[0], "C") == 0)
+
+			if (strcmp(tmp[0], "=") == 0)
 			{
-				wclear(calscr);
-				wmove(calscr, 1, 1);
-				box(calscr, 0, 0);
-				wrefresh(calscr);
-				outstring[0] = '\0';
-				lastoperation = true;
-			}
-			else if (strcmp(tmp[0], "Del") == 0)
-			{
-				if (strlen(outstring) > 0)
+				char buf[1024];
+				char expression[1024];
+				FILE *file;
+				int calmaxx = getmaxx(calscr);
+
+				if (strlen(outstring) != 0)
 				{
-					outstring[strlen(outstring) - 1] = '\0';
+					sprintf(buf, "echo %s | bc", outstring);
+					file = popen(buf, "r");
+					fscanf(file, " %s", expression);
 					wclear(calscr);
-					box(calscr,0 , 0);
-					mvwprintw(calscr, 1, 1, "%s", outstring);	
+					box(calscr, 0, 0);
+					mvwprintw(calscr, 1, 1, "%s=", outstring);
+					mvwprintw(calscr, 2, calmaxx - strlen(expression) - 1, "%s", expression);
 					wrefresh(calscr);
-					if (lastoperation == true) lastoperation = false; 
-					else if (strlen(outstring) == 0) lastoperation = true;
+					outstring[0] = '\0';
+				}
+				else
+				{
+					mvwprintw(calscr, 1, 1, "0=");
+					mvwprintw(calscr, 2, calmaxx - 2, "0");	
+					wrefresh(calscr);
 				}
 			}
 			else
 			{
-				if (lastoperation == true)
+				if (strcmp(tmp[0], "C") == 0)
 				{
-					int a = 0;
-					for (int i = 0; i < 5; i++)
-					{
-						if (strcmp(tmp[0], operators[i]) == 0) a++;
-					}
-					if(a == 0) lastoperation = false;
-				}
-				if (lastoperation == false)
-				{
-					int a = 0;
-					strcat(outstring, tmp[0]);
 					wclear(calscr);
+					wmove(calscr, 1, 1);
 					box(calscr, 0, 0);
-					mvwprintw(calscr, 1, 1, "%s", outstring);
-
-					for (int i = 0; i < 5; i++)
+					wrefresh(calscr);
+					outstring[0] = '\0';
+					lastoperation = true;
+				}
+				else if (strcmp(tmp[0], "Del") == 0)
+				{
+					if (strlen(outstring) > 0)
 					{
-						if (strcmp(tmp[0], operators[i]) == 0) a++;
+						outstring[strlen(outstring) - 1] = '\0';
+						wclear(calscr);
+						box(calscr,0 , 0);
+						mvwprintw(calscr, 1, 1, "%s", outstring);	
+						wrefresh(calscr);
+						if (lastoperation == true) lastoperation = false; 
+						else if (strlen(outstring) == 0) lastoperation = true;
 					}
-					if (a == 1) lastoperation = true;
-				} 
+				}
+				else
+				{
+					if (lastoperation == true)
+					{
+						int a = 0;
+						for (int i = 0; i < 5; i++)
+						{
+							if (strcmp(tmp[0], operators[i]) == 0) a++;
+						}
+						if(a == 0) lastoperation = false;
+					}
+					if (lastoperation == false)
+					{
+						int a = 0;
+						strcat(outstring, tmp[0]);
+						wclear(calscr);
+						box(calscr, 0, 0);
+						mvwprintw(calscr, 1, 1, "%s", outstring);
+	
+						for (int i = 0; i < 5; i++)
+						{
+							if (strcmp(tmp[0], operators[i]) == 0) a++;
+						}
+						if (a == 1) lastoperation = true;
+					} 
+				}
+				strcpy(lastchar, tmp[0]);
+				wrefresh(calscr);
 			}
-			strcpy(lastchar, tmp[0]);
-			wrefresh(calscr);
 		}
 	}
 
