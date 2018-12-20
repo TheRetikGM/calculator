@@ -115,20 +115,31 @@ int numpad(int y, int x)
 			spacerem(tmp[0]);
 
 			if (strcmp(tmp[0], "=") == 0)
-			{
+			{	
+				wclear(calscr);
+				box(calscr, 0, 0);
 				char buf[1024];
+				char buf1[10];
 				char expression[1024];
 				FILE *file;
 				int calmaxx = getmaxx(calscr);
 
 				if (strlen(outstring) != 0)
 				{
-					sprintf(buf, "echo %s | bc", outstring);
+					sprintf(buf, "echo \"scale=4;%s\" | bc -l", outstring);
 					file = popen(buf, "r");
 					fscanf(file, " %s", expression);
 					wclear(calscr);
 					box(calscr, 0, 0);
-					mvwprintw(calscr, 1, 1, "%s=", outstring);
+					mvwprintw(calscr, 1, 1, "%s=", outstring);				
+					int i = strlen(expression) - 5;
+					strncpy(buf1, expression + i, 5);
+					if (strcmp(buf1, ".0000") == 0)
+					{
+						expression[i] = '\0';
+						printw("%s", expression);
+						refresh();
+					}
 					mvwprintw(calscr, 2, calmaxx - strlen(expression) - 1, "%s", expression);
 					wrefresh(calscr);
 					outstring[0] = '\0';
@@ -178,7 +189,8 @@ int numpad(int y, int x)
 					if (lastoperation == false)
 					{
 						int a = 0;
-						strcat(outstring, tmp[0]);
+						if (strcmp(tmp[0], "\u03c0") == 0) strcat(outstring, "(4*a(1))");
+						else strcat(outstring, tmp[0]);
 						wclear(calscr);
 						box(calscr, 0, 0);
 						mvwprintw(calscr, 1, 1, "%s", outstring);
