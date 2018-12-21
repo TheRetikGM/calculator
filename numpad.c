@@ -63,6 +63,8 @@ int numpad(int y, int x)
 			count++;
 		}
 		int choice = wgetch(numwin);
+		printw("%i;", choice);
+		refresh();
 
 		switch(choice)
 		{
@@ -116,16 +118,17 @@ int numpad(int y, int x)
 
 			if (strcmp(tmp[0], "=") == 0)
 			{	
-				wclear(calscr);
-				box(calscr, 0, 0);
-				char buf[1024];
-				char buf1[10];
-				char expression[1024];
-				FILE *file;
-				int calmaxx = getmaxx(calscr);
-
-				if (strlen(outstring) != 0)
+				if (lastoperation == false)
 				{
+					wclear(calscr);
+					box(calscr, 0, 0);
+					char buf[1024];
+					char buf1[10];
+					char expression[1024];
+					FILE *file;
+					int calmaxx = getmaxx(calscr);
+
+				//	if (strlen(outstring) != 0)
 					sprintf(buf, "echo \"scale=4;%s\" | bc -l", outstring);
 					file = popen(buf, "r");
 					fscanf(file, " %s", expression);
@@ -137,18 +140,12 @@ int numpad(int y, int x)
 					if (strcmp(buf1, ".0000") == 0)
 					{
 						expression[i] = '\0';
-						printw("%s", expression);
-						refresh();
 					}
 					mvwprintw(calscr, 2, calmaxx - strlen(expression) - 1, "%s", expression);
 					wrefresh(calscr);
 					outstring[0] = '\0';
-				}
-				else
-				{
-					mvwprintw(calscr, 1, 1, "0=");
-					mvwprintw(calscr, 2, calmaxx - 2, "0");	
-					wrefresh(calscr);
+					
+					lastoperation = true;
 				}
 			}
 			else
